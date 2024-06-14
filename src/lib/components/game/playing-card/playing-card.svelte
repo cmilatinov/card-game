@@ -39,6 +39,16 @@
                             y: 0
                         }
                     ]
+                }),
+                interact.modifiers.restrict({
+                    restriction: card.parentNode as HTMLElement,
+                    endOnly: true,
+                    elementRect: {
+                        top: 0,
+                        left: 0,
+                        bottom: 1,
+                        right: 1,
+                    }
                 })
             ],
             inertia: true
