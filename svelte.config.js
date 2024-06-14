@@ -1,10 +1,8 @@
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import sveltePreprocess from 'svelte-preprocess';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import tailwind from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
 
 const excludeWarnings = [
     'css-unused-selector',
@@ -18,7 +16,12 @@ const config = {
     preprocess: [
         vitePreprocess(),
         sveltePreprocess({
-            postcss: { configFilePath: join(__dirname, 'postcss.config.cjs') }
+            postcss: {
+                plugins: [
+                    tailwind,
+                    autoprefixer,
+                ]
+            }
         })
     ],
     onwarn: (warning, handler) => {
@@ -34,7 +37,10 @@ const config = {
             fallback: undefined,
             precompress: false,
             strict: true
-        })
+        }),
+        alias: {
+            '@/*': './src/*'
+        }
     }
 };
 
