@@ -1,31 +1,18 @@
 <script lang="ts">
-    import { onMount, setContext } from 'svelte';
+    import { onMount} from 'svelte';
     import panzoom from 'panzoom';
-    import { writable, readonly } from 'svelte/store';
+    import { PlayingCard, type PlayingCardInfo } from '$lib/components/game/playing-card';
 
     export let id: string;
+    export let cards: PlayingCardInfo[];
 
     let board: HTMLDivElement;
 
+    const boardX = 7;
+    const boardY = 3;
 
-    const boardX = writable(7);
-    const boardY = writable(3);
-
-    const cellX = writable(120);
-    const cellY = writable(120);
-
-    const context = {
-        boardSize: {
-            x: readonly(boardX),
-            y: readonly(boardY),
-        },
-        gridSize: {
-            cellX: readonly(cellX),
-            cellY: readonly(cellY)
-        }
-    };
-
-    setContext('board', context);
+    const cellX = 120;
+    const cellY = 120;
 
     onMount(() => {
         panzoom(
@@ -46,12 +33,15 @@
     id="{id}"
     class="board relative flex h-full items-center justify-center board"
     style={
-        `width: ${$boardX * $cellX + 1}px; height: ${$boardY * $cellY + 1}px;`+
-        `background-size: ${$cellX}px ${$cellY}px;`
+        `width: ${boardX * cellX + 1}px; height: ${boardY * cellY + 1}px;`+
+        `background-size: ${cellX}px ${cellY}px;`
     }
     bind:this={board}
 >
     <span class="font-semibold">Board</span>
+    {#each cards as card}
+        <PlayingCard id={id} cardHeight={cellY} cardLength={cellY}/>
+    {/each}
     <slot />
 </div>
 

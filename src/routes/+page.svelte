@@ -1,10 +1,29 @@
 <script lang="ts">
     import * as Resizable from '$lib/components/ui/resizable';
-    import { PlayingCard } from '$lib/components/game/playing-card';
+    import { PlayingCard, type PlayingCardInfo } from '$lib/components/game/playing-card';
     import { Board } from '@/lib/components/game/board';
     import { writable } from 'svelte/store';
     let tapped = writable(true);
-    const players = [1, 2, 3];
+
+    type Player = {
+        id: number;
+        cards: PlayingCardInfo[]
+    }
+
+    const players: Player[] = [
+        {
+            id: 1,
+            cards: [ {id: "1", name: 'test'} ]
+        },
+        {
+            id: 1,
+            cards: [ {id: "1", name: 'test'} ]
+        },
+        {
+            id: 1,
+            cards: [ {id: "1", name: 'test'} ]
+        }
+    ];
 </script>
 
 <div class="w-screen h-screen">
@@ -13,13 +32,7 @@
             <Resizable.PaneGroup direction="vertical">
                 {#each players as player}
                     <Resizable.Pane>
-                        <Board id={`board-${player}`}>
-                            <PlayingCard
-                                class="absolute border border-black"
-                                id={`card-${player}`}
-                                bind:tapped={$tapped}
-                            />
-                        </Board>
+                        <Board id={`board-${player.id}`} cards={player.cards} />
                     </Resizable.Pane>
                     <Resizable.Handle />
                 {/each}

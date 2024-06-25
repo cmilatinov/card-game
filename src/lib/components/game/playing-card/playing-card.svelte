@@ -2,25 +2,28 @@
     import interact from 'interactjs';
     import { AspectRatio } from '$lib/components/ui/aspect-ratio';
     import { cn } from '$lib/utils';
-    import { getContext, onMount, tick } from 'svelte';
-    import type { BoardContext } from '$lib/components/game/board';
+    import { onMount } from 'svelte';
+    import { v4 as uuidv4 } from 'uuid';
     interface $$Props {
-        class: string;
+        class?: string;
         id: string;
         tapped?: boolean;
+        cardLength: number;
+        cardHeight: number;
     }
-    export let id = '';
+    const domId = `card-${uuidv4()}`;
     export let tapped = false;
+    export let cardLength: number;
+    export let cardHeight: number;
     let x = 0, y = 0;
     let card: HTMLDivElement;
-    const { gridSize: { cellX, cellY } } = getContext<BoardContext>('board');
-    $: sizeY = $cellY - 20;
+    $: sizeY = cardHeight - 20;
     $: sizeX = sizeY * 5 / 7;
-    $: offsetX = ($cellX - sizeX) / 2;
-    $: offsetY = ($cellY - sizeY) / 2;
+    $: offsetX = (cardLength - sizeX) / 2;
+    $: offsetY = (cardHeight - sizeY) / 2;
 
     onMount(() => {
-        interact(`#${id}`).draggable({
+        interact(`#${domId}`).draggable({
             onmove: (event) => {
                 x += event.dx;
                 y += event.dy;
@@ -36,7 +39,7 @@
                         right: tapped ? offsetY : offsetX,
                     }),
                     targets: [
-                        interact.createSnapGrid({ x: $cellX, y: $cellY })
+                        interact.createSnapGrid({ x: cardLength, y: cardHeight })
                     ],
                     range: Infinity,
                     relativePoints: [
@@ -62,7 +65,7 @@
 </script>
 
 <div
-    id={id}
+    id={domId}
     tabindex="0"
     role="button"
     class={cn(
