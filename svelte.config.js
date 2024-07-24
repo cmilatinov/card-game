@@ -30,6 +30,9 @@ const config = {
         }
         handler(warning);
     },
+    compilerOptions: {
+        dev: true
+    },
     kit: {
         adapter: adapter({
             pages: 'dist',
