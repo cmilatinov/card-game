@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { PlayingCard, type PlayingCardInfo } from '$lib/components/game/playing-card';
+    import { type GameCard } from '@/stores/game';
 
-    export let cards: PlayingCardInfo[];
+    export let cards: GameCard[];
 </script>
 
 <div class="player-hand">

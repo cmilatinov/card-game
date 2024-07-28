@@ -7,6 +7,7 @@ export enum CardType {
 }
 
 export interface Card {
+    id: string;
     name: string;
     type: CardType;
     type_line: string;
@@ -52,17 +53,19 @@ export const gameState = writable<GameState>({
         '1': {
             hp: 0,
             hand: [],
-            board: []
-        },
-        '2': {
-            hp: 0,
-            hand: [],
-            board: []
-        },
-        '3': {
-            hp: 0,
-            hand: [],
-            board: []
+            board: [
+                {
+                    card: {
+                        id: 'asdkasdlkj',
+                        type: CardType.TOKEN,
+                        name: 'BING BONG',
+                        type_line: 'Artifact Bing Bong',
+                        text: 'Bing Bong Card',
+                        tapped: false,
+                    },
+                    position: { x: 0, y: 0 }
+                }
+            ]
         }
     },
 });
