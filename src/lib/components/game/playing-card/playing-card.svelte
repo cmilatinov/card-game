@@ -4,11 +4,9 @@
     import { cn, type DeepPartial } from '$lib/utils';
     import { getContext } from 'svelte';
     import { type Readable } from 'svelte/store';
-    import { type GameCard, gameState, type Placed } from '@/stores/game';
-    export let playerId: string;
-    export let cardIdx: number;
-    export let setCard: (value?: DeepPartial<Placed<GameCard>>) => void;
-    $: card = $gameState.players[playerId].board[cardIdx];
+    import { type GameCard, type Placed } from '@/stores/game';
+    export let card: Placed<GameCard>;
+    export let setCard: (value?: DeepPartial<Placed<GameCard>>) => void; 
     const grid = getContext<Readable<[number, number]>>('grid');
     $: sizeY = $grid[1] - 20;
     $: sizeX = sizeY * 5 / 7;

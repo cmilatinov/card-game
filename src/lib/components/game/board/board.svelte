@@ -42,8 +42,7 @@
     <span class="font-semibold">Board</span>
     {#each $gameState.players[playerId].board as card, idx}
         <PlayingCard 
-            playerId={playerId}
-            cardIdx={idx}
+            card={card}
             setCard={(value) => {               
                 $gameState.players[playerId].board[idx] = _.merge(card, value);
             }}
