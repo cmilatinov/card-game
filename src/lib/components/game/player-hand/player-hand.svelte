@@ -1,27 +1,21 @@
 <script lang="ts">
-    import { PlayingCard, type PlayingCardInfo } from '$lib/components/game/playing-card';
+    import { currentPlayer } from '@/stores/game';
+    import { onMount } from 'svelte';
+    import { createSwapy } from 'swapy';
 
-    export let cards: PlayingCardInfo[];
+    let hand: HTMLDivElement;
+
+    onMount(() => {
+        createSwapy(hand)
+    })
 </script>
 
-<div class="player-hand">
-    {#each cards as card}
-        <div class="playing-card rounded-[3px]"/>
+<div class="w-full flex items-center justify-center" bind:this={hand}>
+    {#each $currentPlayer.hand as card, index}
+        <div data-swapy-slot={`hand-${index}`}>
+            <div data-swapy-item={card.id}>
+                <img class="pointer-events-none" src="{card.img}" alt="{card.name}"/>
+            </div>
+        </div>
     {/each}
 </div>
-
-<style lang="scss">
-    .player-hand {
-        height: 300px;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-    }
-    .playing-card {
-        height: 260px;
-        width: 260px;
-        background: black;
-    }
-</style>

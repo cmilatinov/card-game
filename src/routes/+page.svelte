@@ -1,28 +1,33 @@
 <script lang="ts">
-    import * as Resizable from '$lib/components/ui/resizable';
+    import {ResizableHandle, ResizablePaneGroup, ResizablePane} from '$lib/components/ui/resizable';
     import { Board } from '@/lib/components/game/board';
     import { PlayerHand } from '$lib/components/game/player-hand';
     import { gameState } from '@/stores/game';
-
 </script>
 
 <div class="w-screen h-screen">
-    <Resizable.PaneGroup direction="horizontal">
-        <Resizable.Pane defaultSize={75}>
-            <Resizable.PaneGroup direction="vertical">
+    <ResizablePaneGroup direction="horizontal">
+
+        <ResizablePane>
+            <ResizablePaneGroup id="game-board" direction="vertical">
                 {#each Object.keys($gameState.players) as id}
-                    <Resizable.Pane>
+                    <ResizablePane>
                         <Board playerId={id} />
-                    </Resizable.Pane>
-                    <Resizable.Handle />
+                    </ResizablePane>
+                    <ResizableHandle />
                 {/each}
-            </Resizable.PaneGroup>
-        </Resizable.Pane>
-        <Resizable.Handle />
-        <Resizable.Pane defaultSize={25}>
+                <ResizablePane>
+                    <PlayerHand/>
+                </ResizablePane>
+            </ResizablePaneGroup>
+        </ResizablePane>
+
+        <ResizableHandle />
+
+        <ResizablePane defaultSize={25}>
             <div class="relative flex h-full items-center justify-center">
                 <span class="font-semibold">Card Info</span>
             </div>
-        </Resizable.Pane>
-    </Resizable.PaneGroup>
+        </ResizablePane>
+    </ResizablePaneGroup>
 </div>

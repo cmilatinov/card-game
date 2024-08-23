@@ -615,11 +615,6 @@
     focus-trap "^7.5.2"
     nanoid "^5.0.4"
 
-"@neodrag/svelte@^2.0.6":
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/@neodrag/svelte/-/svelte-2.0.6.tgz#5225b560475434459ec6befcea35b1cd0ef0fbdb"
-  integrity sha512-jjmTjRTMJaer2IyEIoS5xbccmFmOpkeoTKpBORkMItCPjHWE19eW3kvH9SuTvZJAKnKERVNGdW3VBuDxZif9Dg==
-
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz"
@@ -2983,6 +2978,11 @@ sveltekit-superforms@^2.15.1:
     yup "^1.4.0"
     zod "^3.23.8"
     zod-to-json-schema "^3.23.0"
+
+swapy@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/swapy/-/swapy-0.1.1.tgz#0231307ce179c4b1c3dd1b20770424448524b6d0"
+  integrity sha512-iurSCHQnTgw3Jk663AFx9ZAcu5mFCUJvDBpN2aUn1U6Ec8zo8vlqtXDGLg7GH50zx5SdBf28DepKZMhw3TS1dw==
 
 tabbable@^6.2.0:
   version "6.2.0"
