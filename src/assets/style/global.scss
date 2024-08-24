@@ -1,2 +1,6 @@
 @import "tailwind";
 @import "shadcn";
+
+.playing-card {
+    @apply pointer-events-none h-[311px] w-[223px]
+}

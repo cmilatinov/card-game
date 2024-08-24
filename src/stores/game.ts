@@ -1,92 +1,97 @@
-import { derived, writable } from 'svelte/store';
+import { derived, type Readable, writable } from 'svelte/store';
+import type { Card } from 'scryfall-sdk';
+import { string } from 'zod';
 
-export enum CardType {
-    SPELL,
-    CREATURE,
-    TOKEN
-}
+type UUID = string;
 
-export interface Card {
+export interface BoardCard {
     id: string;
-    name: string;
-    img: string;
-    type: CardType;
-    type_line: string;
-    text: string;
     tapped: boolean;
-}
-
-export interface CreatureCard extends Card {
-    type: CardType.CREATURE;
-    cost: string;
-    power: string;
-    toughness: string;
-}
-
-export interface SpellCard extends Card {
-    type: CardType.SPELL;
-    cost: string;
-}
-
-export interface TokenCard extends Card {
-    type: CardType.TOKEN;
-}
-
-export type GameCard = CreatureCard | SpellCard | TokenCard;
-
-export interface Placed<T extends Card> {
-    [key: number]: T
+    info: Card;
 }
 
 export interface PlayerState {
     hp: number;
-    hand: GameCard[];
-    board: Placed<GameCard>;
+    hand: Card[];
+    board: Map<number, BoardCard>;
 }
 
 export interface GameState {
-    currentPlayer: string,
-    players: Record<string, PlayerState>;
+    currentPlayer: UUID,
+    players: Map<UUID, PlayerState>;
 }
 
 export const gameState = writable<GameState>({
-    currentPlayer: '1',
-    players: {
-        '1': {
-            hp: 0,
-            hand: [
-                {
-                    id: '1',
-                    type: CardType.TOKEN,
-                    img: 'https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=409741&type=card',
-                    name: 'BING BONG',
-                    type_line: 'Artifact Bing Bong',
-                    text: 'Bing Bong Card',
-                    tapped: false,
-                },
-                {
-                    id: '2',
-                    type: CardType.TOKEN,
-                    img: 'https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=409741&type=card',
-                    name: 'BING BONG',
-                    type_line: 'Artifact Bing Bong',
-                    text: 'Bing Bong Card',
-                    tapped: false,
-                },
-            ],
-            board: {
-                4: {
-                    id: '3',
-                    type: CardType.TOKEN,
-                    img: 'https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=409741&type=card',
-                    name: 'BING BONG',
-                    type_line: 'Artifact Bing Bong',
-                    text: 'Bing Bong Card',
-                    tapped: false,
-                }
-            }
-        }
-    },
+    currentPlayer: '',
+    players: new Map<UUID, PlayerState>()
 });
 
-export const currentPlayer = derived(gameState, $s => $s.players[$s.currentPlayer])
+export interface Player {
+    id: string;
+    state: PlayerState;
+}
+
+export const currentPlayer: Readable<Player | undefined> = derived(gameState, $s => {
+    const player = $s.players.get($s.currentPlayer);
+    if (!player) {
+        return;
+    }
+
+    return { id: $s.currentPlayer, state: player };
+});
+
+export const otherPlayers: Readable<Player[]> = derived(gameState, $s => {
+    const players: Player[] = [];
+
+    for (const [id, state] of $s.players.entries()) {
+        if ($s.currentPlayer !== id) {
+            players.push({ id, state });
+        }
+    }
+
+    return players;
+});
+
+export const setCurrentPlayer = (currentPlayer: UUID) => {
+    gameState.update((state) => ({ ...state, currentPlayer }));
+};
+
+export const addPlayer = (id: UUID, player: PlayerState = { hp: 100, board: new Map<number, BoardCard>, hand: [] }) => {
+    gameState.update((state) => {
+        state.players.set(id, player);
+
+        return state;
+    });
+};
+
+export const addCurrentPlayer = (id: UUID, player: PlayerState = {
+    hp: 100,
+    board: new Map<number, BoardCard>,
+    hand: []
+}) => {
+    addPlayer(id, player);
+    setCurrentPlayer(id);
+};
+
+export const setCardOnBoard = (playerId: UUID, boardIdx: number, card: BoardCard) => {
+    gameState.update((state) => {
+        const player = state.players.get(playerId);
+        if (player) {
+            player.board.set(boardIdx, card);
+        }
+
+        return state;
+    });
+};
+
+export const addCardToHand = (playerId: UUID, card: Card) => {
+    gameState.update((state) => {
+        const player = state.players.get(playerId);
+        if (player) {
+            player.hand.push(card);
+            state.players.set(playerId, player);
+        }
+
+        return state;
+    });
+};

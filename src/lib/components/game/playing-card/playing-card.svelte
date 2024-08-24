@@ -1,7 +1,7 @@
 <script lang="ts">
-    import type { GameCard } from '@/stores/game';
+    import type { BoardCard } from '@/stores/game';
 
-    export let card: GameCard;
+    export let card: BoardCard;
 </script>
 
 <div
@@ -10,6 +10,6 @@
     data-swapy-item={card.id}
     style={`${card.tapped ? ' rotate(90deg)' : ''}`}
 >
-    <img class="pointer-events-none" src="{card.img}" alt="{card.name}"/>
+    <img class="playing-card" src="{card.info.image_uris?.normal}" alt="{card.info.name}"/>
 </div>
 
