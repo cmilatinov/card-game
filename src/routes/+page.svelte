@@ -13,10 +13,10 @@
     import { Button } from '$lib/components/ui/button';
 </script>
 
-<div class="w-screen h-screen">
+<div class="h-screen">
     <Button on:click={async () => {
-        addCurrentPlayer(crypto.randomUUID());
-        addPlayer(crypto.randomUUID());
+        addCurrentPlayer({ id: crypto.randomUUID(), hp: 100, hand: [], board: new Map() });
+        addPlayer({ id: crypto.randomUUID(), hp: 100, hand: [], board: new Map() });
 
         if (!$currentPlayer) {
             return;
@@ -38,14 +38,14 @@
                 {#each $otherPlayers as player}
                     <div>Player {player.id}</div>
                     <ResizablePane>
-                        <Board playerId={player.id} />
+                        <Board player={player} />
                     </ResizablePane>
                     <ResizableHandle />
                 {/each}
                 {#if $currentPlayer}
                     <div>Your Board</div>
                     <ResizablePane defaultSize={75}>
-                        <Board playerId={$currentPlayer.id} showHand interactive />
+                        <Board player={$currentPlayer} showHand interactive />
                     </ResizablePane>
                 {/if}
             </ResizablePaneGroup>

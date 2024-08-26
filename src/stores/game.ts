@@ -1,6 +1,6 @@
 import { derived, type Readable, writable } from 'svelte/store';
 import type { Card } from 'scryfall-sdk';
-import { string } from 'zod';
+import _ from 'lodash';
 
 type UUID = string;
 
@@ -11,6 +11,7 @@ export interface BoardCard {
 }
 
 export interface PlayerState {
+    id: string;
     hp: number;
     hand: Card[];
     board: Map<number, BoardCard>;
@@ -26,51 +27,31 @@ export const gameState = writable<GameState>({
     players: new Map<UUID, PlayerState>()
 });
 
-export interface Player {
-    id: string;
-    state: PlayerState;
-}
+export const currentPlayer: Readable<PlayerState | undefined> = derived(
+    gameState,
+    $s => $s.players.get($s.currentPlayer)
+);
 
-export const currentPlayer: Readable<Player | undefined> = derived(gameState, $s => {
-    const player = $s.players.get($s.currentPlayer);
-    if (!player) {
-        return;
-    }
-
-    return { id: $s.currentPlayer, state: player };
-});
-
-export const otherPlayers: Readable<Player[]> = derived(gameState, $s => {
-    const players: Player[] = [];
-
-    for (const [id, state] of $s.players.entries()) {
-        if ($s.currentPlayer !== id) {
-            players.push({ id, state });
-        }
-    }
-
-    return players;
-});
+export const otherPlayers: Readable<PlayerState[]> = derived(
+    gameState,
+    $s => [...$s.players.values()].filter(player => player.id != $s.currentPlayer)
+)
 
 export const setCurrentPlayer = (currentPlayer: UUID) => {
     gameState.update((state) => ({ ...state, currentPlayer }));
 };
 
-export const addPlayer = (id: UUID, player: PlayerState = { hp: 100, board: new Map<number, BoardCard>, hand: [] }) => {
+export const addPlayer = (player: PlayerState) => {
     gameState.update((state) => {
-        state.players.set(id, player);
+        state.players.set(player.id, player);
 
         return state;
     });
 };
 
-export const addCurrentPlayer = (id: UUID, player: PlayerState = {
-    hp: 100,
-    board: new Map<number, BoardCard>,
-    hand: []
-}) => {
-    addPlayer(id, player);
-    setCurrentPlayer(id);
+export const addCurrentPlayer = (player: PlayerState) => {
+    addPlayer(player);
+    setCurrentPlayer(player.id);
 };
 
 export const setCardOnBoard = (playerId: UUID, boardIdx: number, card: BoardCard) => {

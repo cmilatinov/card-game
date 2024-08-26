@@ -1,15 +1,8 @@
 <script lang="ts">
-    import type { BoardCard } from '@/stores/game';
+    import type { Card } from 'scryfall-sdk';
 
-    export let card: BoardCard;
+    export let info: Card;
 </script>
 
-<div
-    tabindex="0"
-    role="button"
-    data-swapy-item={card.id}
-    style={`${card.tapped ? ' rotate(90deg)' : ''}`}
->
-    <img class="playing-card" src="{card.info.image_uris?.normal}" alt="{card.info.name}"/>
-</div>
 
+<img class="playing-card max-h-[311px] max-w-[223px]" src="{info.image_uris?.normal}" alt="{info.name}" />
